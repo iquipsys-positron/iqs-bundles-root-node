@@ -1,8 +1,8 @@
 ---
 # Container descriptor
 - descriptor: "pip-services:context-info:default:default:1.0"
-  name: "iqs-facade-node"
-  description: "iQuipsys Positron facade"
+  name: "iqs-bundles-root-node"
+  description: "iQuipsys Positron root container"
 
 # - descriptor: "pip-services:shutdown:default:default:1.0"
 #   mode: exception
@@ -51,162 +51,157 @@
 
 ############## Infrastructure components ##############
 
-# Event Log component
-- descriptor: "pip-services-eventlog:client:http:default:*"
+# Event Log components
+- descriptor: "pip-services-eventlog:persistence:mongodb:default:*"
   connection:
-    protocol: "http"
-    host: "{{{IQS_GROUPS_INFRASTRUCTURE_SERVICE_HOST}}}"
-    port: {{IQS_GROUPS_INFRASTRUCTURE_SERVICE_PORT}}
-  options:
-    connect_timeout: 10000
-    timeout: 10000
-    retries: 3
+    discovery_key: mongodb
+- descriptor: "pip-services-eventlog:controller:default:default:*"
+- descriptor: "pip-services-eventlog:client:direct:default:*"
+
+# Statistics components ????
+# - descriptor: "pip-services-statistics:persistence:mongodb:default:*"
+#   connection:
+#     discovery_key: mongodb
+# - descriptor: "pip-services-statistics:controller:default:default:*"
+# - descriptor: "pip-services-statistics:client:direct:default:*"
+# - descriptor: "iqs-services-statistics:client:direct:default:*"
 
 # Statistics component
 - descriptor: "pip-services-statistics:client:http:default:*"
   connection:
     protocol: "http"
-    host: "{{{IQS_GROUPS_HISTORY_SERVICE_HOST}}}"
-    port: {{IQS_GROUPS_HISTORY_SERVICE_PORT}}
+    host: "{{{IQS_BUNDLES_TENANTS_SERVICE_HOST}}}"
+    port: {{IQS_BUNDLES_TENANTS_SERVICE_PORT}}
 - descriptor: "iqs-services-statistics:client:http-proxy:default:*"
   connection:
     protocol: "http"
-    host: "{{{IQS_GROUPS_HISTORY_SERVICE_HOST}}}"
-    port: {{IQS_GROUPS_HISTORY_SERVICE_PORT}}
+    host: "{{{IQS_BUNDLES_TENANTS_SERVICE_HOST}}}"
+    port: {{IQS_BUNDLES_TENANTS_SERVICE_PORT}}
 
-# Settings component
-- descriptor: "pip-services-settings:client:http:default:*"
+# Settings components
+- descriptor: "pip-services-settings:persistence:mongodb:default:*"
   connection:
-    protocol: "http"
-    host: "{{{IQS_GROUPS_INFRASTRUCTURE_SERVICE_HOST}}}"
-    port: {{IQS_GROUPS_INFRASTRUCTURE_SERVICE_PORT}}
-  options:
-    connect_timeout: 10000
-    timeout: 10000
-    retries: 3
+    discovery_key: mongodb
+- descriptor: "pip-services-settings:controller:default:default:*"
+- descriptor: "pip-services-settings:client:direct:default:*"
 
-# Facets component
-- descriptor: "pip-services-facets:client:http:default:*"
-  connection:
-    protocol: "http"
-    host: "{{{IQS_GROUPS_INFRASTRUCTURE_SERVICE_HOST}}}"
-    port: {{IQS_GROUPS_INFRASTRUCTURE_SERVICE_PORT}}
-  options:
-    connect_timeout: 10000
-    timeout: 10000
-    retries: 3
+# Facets components
+# - descriptor: "pip-services-facets:persistence:mongodb:default:*"
+#   connection:
+#     discovery_key: mongodb
+# - descriptor: "pip-services-facets:controller:default:default:*"
+# - descriptor: "pip-services-facets:client:direct:default:*"
 
-# Email component
-- descriptor: "pip-services-email:client:http:default:*"
-  connection:
-    protocol: "http"
-    host: "{{{IQS_GROUPS_INFRASTRUCTURE_SERVICE_HOST}}}"
-    port: {{IQS_GROUPS_INFRASTRUCTURE_SERVICE_PORT}}
-  options:
-    connect_timeout: 10000
-    timeout: 10000
-    retries: 3
 
-# Sms component
-- descriptor: "pip-services-sms:client:http:default:*"
+# Email components
+- descriptor: "pip-services-email:controller:default:default:*"
   connection:
-    protocol: "http"
-    host: "{{{IQS_GROUPS_INFRASTRUCTURE_SERVICE_HOST}}}"
-    port: {{IQS_GROUPS_INFRASTRUCTURE_SERVICE_PORT}}
-  options:
-    connect_timeout: 10000
-    timeout: 10000
-    retries: 3
+    service: "{{{EMAIL_SERVICE}}}"
+    host: "{{{EMAIL_SERVICE_HOST}}}"
+    secure_connection: "{{{EMAIL_SSL}}}"
+    port: "{{{EMAIL_SERVICE_PORT}}}"
+  credential:
+    username: "{{{EMAIL_USER}}}"
+    password: "{{{EMAIL_PASS}}}"
+  message:
+    from: "{{{EMAIL_FROM}}}"
+  parameters:
+    client_name: "iQuipsys Positron"
+    client_url: "{{{CLIENT_URL}}}"
+    server_url: "{{{SERVER_URL}}}"
+    signature: "Yours iQuipsys support"
+- descriptor: "pip-services-email:client:direct:default:*"
+
+# Sms components
+- descriptor: "pip-services-sms:controller:default:default:*"
+  credential:
+    access_id: {{{AWS_ACCESS_ID}}}
+    access_key: {{{AWS_ACCESS_KEY}}}
+  message:
+    from: 'iquipsys'
+  parameters:
+    client_name: "iQuipsys Positron"
+    client_url: "{{{CLIENT_URL}}}"
+    server_url: "{{{SERVER_URL}}}"
+    signature: "Yours iQuipsys support"
+- descriptor: "pip-services-sms:client:direct:default:*"
 
 ############# User management components ##############
 
-# Activities component
-- descriptor: "pip-services-activities:client:http:default:*"
+# Activities components
+- descriptor: "pip-services-activities:persistence:mongodb:default:*"
   connection:
-    protocol: "http"
-    host: "{{{IQS_GROUPS_USERS_SERVICE_HOST}}}"
-    port: {{IQS_GROUPS_USERS_SERVICE_PORT}}
-  options:
-    connect_timeout: 10000
-    timeout: 10000
-    retries: 3
+    discovery_key: mongodb
+- descriptor: "pip-services-activities:controller:default:default:*"
+- descriptor: "pip-services-activities:client:direct:default:*"
 
-# Accounts component
-- descriptor: "pip-services-accounts:client:http:default:*"
+# Accounts components
+- descriptor: "pip-services-accounts:persistence:mongodb:default:*"
   connection:
-    protocol: "http"
-    host: "{{{IQS_GROUPS_USERS_SERVICE_HOST}}}"
-    port: {{IQS_GROUPS_USERS_SERVICE_PORT}}
-  options:
-    connect_timeout: 10000
-    timeout: 10000
-    retries: 3
+    discovery_key: mongodb
+- descriptor: "pip-services-accounts:controller:default:default:*"
+- descriptor: "pip-services-accounts:client:direct:default:*"
 
-# Email settings component
-- descriptor: "pip-services-emailsettings:client:http:default:*"
-  connection:
-    protocol: "http"
-    host: "{{{IQS_GROUPS_USERS_SERVICE_HOST}}}"
-    port: {{IQS_GROUPS_USERS_SERVICE_PORT}}
-  options:
-    connect_timeout: 10000
-    timeout: 10000
-    retries: 3
 
-# Sms settings component
-- descriptor: "pip-services-smssettings:client:http:default:*"
+# Email settings components
+- descriptor: "pip-services-emailsettings:persistence:mongodb:default:*"
   connection:
-    protocol: "http"
-    host: "{{{IQS_GROUPS_USERS_SERVICE_HOST}}}"
-    port: {{IQS_GROUPS_USERS_SERVICE_PORT}}
+    discovery_key: mongodb
+- descriptor: "pip-services-emailsettings:controller:default:default:*"
   options:
-    connect_timeout: 10000
-    timeout: 10000
-    retries: 3
+    magic_code: "{{{MAGIC_CODE}}}"
+    verify_expire_timeout: 2880
+  message_templates:
+    verify_email:
+      template: verify_email
+- descriptor: "pip-services-emailsettings:client:direct:default:*"
 
-# Message distribution component
-- descriptor: "pip-services-msgdistribution:client:http:default:*"
+# Sms settings components
+- descriptor: "pip-services-smssettings:persistence:mongodb:default:*"
   connection:
-    protocol: "http"
-    host: "{{{IQS_GROUPS_USERS_SERVICE_HOST}}}"
-    port: {{IQS_GROUPS_USERS_SERVICE_PORT}}
+    discovery_key: mongodb
+- descriptor: "pip-services-smssettings:controller:default:default:*"
   options:
-    connect_timeout: 10000
-    timeout: 10000
-    retries: 3
+    magic_code: "{{{MAGIC_CODE}}}"
+    verify_expire_timeout: 2880
+  message_templates:
+    verify_phone:
+      template: verify_phone
+- descriptor: "pip-services-smssettings:client:direct:default:*"
 
-# Passwords component
-- descriptor: "pip-services-passwords:client:http:default:*"
-  connection:
-    protocol: "http"
-    host: "{{{IQS_GROUPS_USERS_SERVICE_HOST}}}"
-    port: {{IQS_GROUPS_USERS_SERVICE_PORT}}
-  options:
-    connect_timeout: 10000
-    timeout: 10000
-    retries: 3
+# Message distribution components
+- descriptor: "pip-services-msgdistribution:controller:default:default:*"
+- descriptor: "pip-services-msgdistribution:client:direct:default:*"
 
-# Roles component
-- descriptor: "pip-services-roles:client:http:default:*"
+# Passwords components
+- descriptor: "pip-services-passwords:persistence:mongodb:default:*"
   connection:
-    protocol: "http"
-    host: "{{{IQS_GROUPS_USERS_SERVICE_HOST}}}"
-    port: {{IQS_GROUPS_USERS_SERVICE_PORT}}
+    discovery_key: mongodb
+- descriptor: "pip-services-passwords:controller:default:default:*"
   options:
-    connect_timeout: 10000
-    timeout: 10000
-    retries: 3
+    magic_code: "{{{MAGIC_CODE}}}"
+  message_templates:
+    recover_password:
+      template: recover_password
+    account_locked:
+      template: account_locked
+    password_changed:
+      template: password_changed
+- descriptor: "pip-services-passwords:client:direct:default:*"
 
-# Sessions component
-- descriptor: "pip-services-sessions:client:http:default:*"
+# Roles components
+- descriptor: "pip-services-roles:persistence:mongodb:default:*"
   connection:
-    protocol: "http"
-    host: "{{{IQS_GROUPS_USERS_SERVICE_HOST}}}"
-    port: {{IQS_GROUPS_USERS_SERVICE_PORT}}
-  options:
-    connect_timeout: 10000
-    timeout: 10000
-    retries: 3
+    discovery_key: mongodb
+- descriptor: "pip-services-roles:controller:default:default:*"
+- descriptor: "pip-services-roles:client:direct:default:*"
+
+# Sessions components
+- descriptor: "pip-services-sessions:persistence:mongodb:default:*"
+  connection:
+    discovery_key: mongodb
+- descriptor: "pip-services-sessions:controller:default:default:*"
+- descriptor: "pip-services-sessions:client:direct:default:*"
 
 ########### Content management components ###########
 
@@ -218,355 +213,254 @@
     access_id: "{{{AWS_ACCESS_ID}}}"
     access_key: "{{{AWS_ACCESS_KEY}}}"
 
-# Attachments component
-- descriptor: "pip-services-attachments:client:http:default:*"
+# Attachments components
+- descriptor: "pip-services-attachments:persistence:mongodb:default:*"
   connection:
-    protocol: "http"
-    host: "{{{IQS_GROUPS_CONTENT_SERVICE_HOST}}}"
-    port: {{IQS_GROUPS_CONTENT_SERVICE_PORT}}
-  options:
-    connect_timeout: 10000
-    timeout: 10000
-    retries: 3
+    discovery_key: mongodb
+- descriptor: "pip-services-attachments:controller:default:default:*"
+- descriptor: "pip-services-attachments:client:direct:default:*"
 
-# Image Sets component
-- descriptor: "pip-services-imagesets:client:http:default:*"
+# Image Sets components
+- descriptor: "pip-services-imagesets:persistence:mongodb:default:*"
   connection:
-    protocol: "http"
-    host: "{{{IQS_GROUPS_CONTENT_SERVICE_HOST}}}"
-    port: {{IQS_GROUPS_CONTENT_SERVICE_PORT}}
-  options:
-    connect_timeout: 10000
-    timeout: 10000
-    retries: 3
+    discovery_key: mongodb
+- descriptor: "pip-services-imagesets:controller:default:default:*"
+- descriptor: "pip-services-imagesets:client:direct:default:*"
 
-# Applications component
-- descriptor: "pip-services-applications:client:http:default:*"
+# Applications components
+- descriptor: "pip-services-applications:persistence:mongodb:default:*"
   connection:
-    protocol: "http"
-    host: "{{{IQS_GROUPS_CONTENT_SERVICE_HOST}}}"
-    port: {{IQS_GROUPS_CONTENT_SERVICE_PORT}}
-  options:
-    connect_timeout: 10000
-    timeout: 10000
-    retries: 3
+    discovery_key: mongodb
+- descriptor: "pip-services-applications:controller:default:default:*"
+- descriptor: "pip-services-applications:client:direct:default:*"
 
-# Tips component
-- descriptor: "pip-services-tips:client:http:default:*"
+# Tips components
+- descriptor: "pip-services-tips:persistence:mongodb:default:*"
   connection:
-    protocol: "http"
-    host: "{{{IQS_GROUPS_CONTENT_SERVICE_HOST}}}"
-    port: {{IQS_GROUPS_CONTENT_SERVICE_PORT}}
-  options:
-    connect_timeout: 10000
-    timeout: 10000
-    retries: 3
+    discovery_key: mongodb
+- descriptor: "pip-services-tips:controller:default:default:*"
+- descriptor: "pip-services-tips:client:direct:default:*"
 
-# Guides component
-- descriptor: "pip-services-guides:client:http:default:*"
+# Guides components
+- descriptor: "pip-services-guides:persistence:mongodb:default:*"
   connection:
-    protocol: "http"
-    host: "{{{IQS_GROUPS_CONTENT_SERVICE_HOST}}}"
-    port: {{IQS_GROUPS_CONTENT_SERVICE_PORT}}
-  options:
-    connect_timeout: 10000
-    timeout: 10000
-    retries: 3
+    discovery_key: mongodb
+- descriptor: "pip-services-guides:controller:default:default:*"
+- descriptor: "pip-services-guides:client:direct:default:*"
 
-# Help component
-- descriptor: "pip-services-help:client:http:default:*"
+# Help components
+- descriptor: "pip-services-help:persistence-topics:mongodb:default:*"
   connection:
-    protocol: "http"
-    host: "{{{IQS_GROUPS_CONTENT_SERVICE_HOST}}}"
-    port: {{IQS_GROUPS_CONTENT_SERVICE_PORT}}
-  options:
-    connect_timeout: 10000
-    timeout: 10000
-    retries: 3
+    discovery_key: mongodb
+- descriptor: "pip-services-help:persistence-articles:mongodb:default:*"
+  connection:
+    discovery_key: mongodb
+- descriptor: "pip-services-help:controller:default:default:*"
+- descriptor: "pip-services-help:client:direct:default:*"
 
-# Dashboards component
-- descriptor: "pip-services-dashboards:client:http:default:*"
+# Dashboards components
+- descriptor: "pip-services-dashboards:persistence:mongodb:default:*"
   connection:
-    protocol: "http"
-    host: "{{{IQS_GROUPS_CONTENT_SERVICE_HOST}}}"
-    port: {{IQS_GROUPS_CONTENT_SERVICE_PORT}}
-  options:
-    connect_timeout: 10000
-    timeout: 10000
-    retries: 3
-
-# Message templates component
-- descriptor: "pip-services-msgtemplates:client:http:default:*"
-  connection:
-    protocol: "http"
-    host: "{{{IQS_GROUPS_CONTENT_SERVICE_HOST}}}"
-    port: {{IQS_GROUPS_CONTENT_SERVICE_PORT}}
-  options:
-    connect_timeout: 10000
-    timeout: 10000
-    retries: 3
+    discovery_key: mongodb
+- descriptor: "pip-services-dashboards:controller:default:default:*"
+- descriptor: "pip-services-dashboards:client:direct:default:*"
 
 ########### Product support components ###########
 
-# Announcements component
-- descriptor: "pip-services-announcements:client:http:default:*"
+# Announcements components
+- descriptor: "pip-services-announcements:persistence:mongodb:default:*"
   connection:
-    protocol: "http"
-    host: "{{{IQS_GROUPS_SUPPORT_SERVICE_HOST}}}"
-    port: {{IQS_GROUPS_SUPPORT_SERVICE_PORT}}
-  options:
-    connect_timeout: 10000
-    timeout: 10000
-    retries: 3
+    discovery_key: mongodb
+- descriptor: "pip-services-announcements:controller:default:default:*"
+- descriptor: "pip-services-announcements:client:direct:default:*"
 
-# Feedbacks component
-- descriptor: "pip-services-feedbacks:client:http:default:*"
+# Feedbacks components
+- descriptor: "pip-services-feedbacks:persistence:mongodb:default:*"
   connection:
-    protocol: "http"
-    host: "{{{IQS_GROUPS_SUPPORT_SERVICE_HOST}}}"
-    port: {{IQS_GROUPS_SUPPORT_SERVICE_PORT}}
-  options:
-    connect_timeout: 10000
-    timeout: 10000
-    retries: 3
+    discovery_key: mongodb
+- descriptor: "pip-services-feedbacks:controller:default:default:*"
+- descriptor: "pip-services-feedbacks:client:direct:default:*"
 
 ########### eCommerce components ###########
 
-# Credit cards component
-- descriptor: "pip-services-creditcards:client:http:default:*"
+# Credit cards components
+- descriptor: "pip-services-creditcards:persistence:paypal:default:*"
+  credential:
+    access_id: "{{{PAYPAL_ACCESS_ID}}}"
+    access_key: "{{{PAYPAL_ACCESS_KEY}}}"
+- descriptor: "pip-services-creditcards:controller:default:default:*"
+- descriptor: "pip-services-creditcards:client:direct:default:*"
+
+########### Positron root components ###########
+
+# Clusters components
+- descriptor: "pip-services-clusters:persistence:mongodb:default:*"
   connection:
-    protocol: "http"
-    host: "{{{IQS_GROUPS_ECOMMERCE_SERVICE_HOST}}}"
-    port: {{IQS_GROUPS_ECOMMERCE_SERVICE_PORT}}
-  options:
-    connect_timeout: 10000
-    timeout: 10000
-    retries: 3
+    discovery_key: mongodb
+- descriptor: "pip-services-clusters:controller:default:default:*"
+- descriptor: "pip-services-clusters:client:direct:default:*"
+- descriptor: "pip-services-clusters:service:http:default:*"
 
 ########### iQs System components ###########
-
-# Clusters component
-- descriptor: "pip-services-clusters:client:http:default:*"
+ 
+# Agreements components
+- descriptor: "iqs-services-agreements:persistence:mongodb:default:*"
   connection:
-    protocol: "http"
-    host: "{{{IQS_GROUPS_SYSTEM_SERVICE_HOST}}}"
-    port: {{IQS_GROUPS_SYSTEM_SERVICE_PORT}}
-  options:
-    connect_timeout: 10000
-    timeout: 10000
-    retries: 3
+    discovery_key: mongodb
+- descriptor: "iqs-services-agreements:controller:default:default:*"
+- descriptor: "iqs-services-agreements:client:direct:default:*"
 
-# Agreements component
-- descriptor: "iqs-services-agreements:client:http:default:*"
+# Invitations components
+- descriptor: "pip-services-invitations:persistence:mongodb:default:*"
   connection:
-    protocol: "http"
-    host: "{{{IQS_GROUPS_SYSTEM_SERVICE_HOST}}}"
-    port: {{IQS_GROUPS_SYSTEM_SERVICE_PORT}}
-  options:
-    connect_timeout: 10000
-    timeout: 10000
-    retries: 3
+    discovery_key: mongodb
+- descriptor: "pip-services-invitations:controller:default:default:*"
+  message_templates:
+    invitation:
+      template: invitation
+    access_request:
+      template: access_request
+    access_approved:
+      template: access_approved
+    access_denied:
+      template: access_denied
+    organization_invitation:
+      template: organization_invitation
+- descriptor: "pip-services-invitations:client:direct:default:*"
 
-# Invitations component
-- descriptor: "pip-services-invitations:client:http:default:*"
-  connection:
-    protocol: "http"
-    host: "{{{IQS_GROUPS_SYSTEM_SERVICE_HOST}}}"
-    port: {{IQS_GROUPS_SYSTEM_SERVICE_PORT}}
+# Roles components
+- descriptor: "pip-services-orgroles:controller:default:default:*"
   options:
-    connect_timeout: 10000
-    timeout: 10000
-    retries: 3
-
-# Roles component
-- descriptor: "pip-services-orgroles:client:http:default:*"
-  connection:
-    protocol: "http"
-    host: "{{{IQS_GROUPS_SYSTEM_SERVICE_HOST}}}"
-    port: {{IQS_GROUPS_SYSTEM_SERVICE_PORT}}
-  options:
-    connect_timeout: 10000
-    timeout: 10000
-    retries: 3
+    demo_org_id: "{{{DEMO_ORG_ID}}}"
+    demo_organization_ru_id : "{{{DEMO_ORG_RU_ID}}}"
+  message_templates:
+    organization_grant_access:
+      template: organization_grant_access
+- descriptor: "pip-services-orgroles:client:direct:default:*"
 
 ########### iQs Configuration components ###########
 
-# Organizations component
-- descriptor: "pip-services-organizations:client:http:default:*"
+# Organizations components
+- descriptor: "pip-services-organizations:persistence:mongodb:default:*"
   connection:
-    protocol: "http"
-    host: "{{{IQS_GROUPS_CONFIGURATION_SERVICE_HOST}}}"
-    port: {{IQS_GROUPS_CONFIGURATION_SERVICE_PORT}}
-  options:
-    connect_timeout: 10000
-    timeout: 10000
-    retries: 3
+    discovery_key: mongodb
+- descriptor: "pip-services-organizations:controller:default:default:*"
+- descriptor: "pip-services-organizations:client:direct:default:*"
+- descriptor: "pip-services-organizations:service:http:default:*"
 
-
-# Locations component
-- descriptor: "iqs-services-locations:client:http:default:*"
+# Locations components
+- descriptor: "iqs-services-locations:persistence:mongodb:default:*"
   connection:
-    protocol: "http"
-    host: "{{{IQS_GROUPS_CONFIGURATION_SERVICE_HOST}}}"
-    port: {{IQS_GROUPS_CONFIGURATION_SERVICE_PORT}}
-  options:
-    connect_timeout: 10000
-    timeout: 10000
-    retries: 3
+    discovery_key: mongodb
+- descriptor: "iqs-services-locations:controller:default:default:*"
+- descriptor: "iqs-services-locations:client:direct:default:*"
 
-# Object groups component
-- descriptor: "iqs-services-objectgroups:client:http:default:*"
+# Object groups components
+- descriptor: "iqs-services-objectgroups:persistence:mongodb:default:*"
   connection:
-    protocol: "http"
-    host: "{{{IQS_GROUPS_CONFIGURATION_SERVICE_HOST}}}"
-    port: {{IQS_GROUPS_CONFIGURATION_SERVICE_PORT}}
-  options:
-    connect_timeout: 10000
-    timeout: 10000
-    retries: 3
+    discovery_key: mongodb
+- descriptor: "iqs-services-objectgroups:controller:default:default:*"
+- descriptor: "iqs-services-objectgroups:client:direct:default:*"
 
-# Control objects component
-- descriptor: "iqs-services-controlobjects:client:http:default:*"
+# Control objects components
+- descriptor: "iqs-services-controlobjects:persistence:mongodb:default:*"
   connection:
-    protocol: "http"
-    host: "{{{IQS_GROUPS_CONFIGURATION_SERVICE_HOST}}}"
-    port: {{IQS_GROUPS_CONFIGURATION_SERVICE_PORT}}
-  options:
-    connect_timeout: 10000
-    timeout: 10000
-    retries: 3
+    discovery_key: mongodb
+- descriptor: "iqs-services-controlobjects:controller:default:default:*"
+- descriptor: "iqs-services-controlobjects:client:direct:default:*"
+- descriptor: "iqs-services-controlobjects:service:http:default:*"
 
-# # Data profiles component
-- descriptor: "iqs-services-dataprofiles:client:http:default:*"
+# Data profiles components
+- descriptor: "iqs-services-dataprofiles:persistence:mongodb:default:*"
   connection:
-    protocol: "http"
-    host: "{{{IQS_GROUPS_CONFIGURATION_SERVICE_HOST}}}"
-    port: {{IQS_GROUPS_CONFIGURATION_SERVICE_PORT}}
-  options:
-    connect_timeout: 10000
-    timeout: 10000
-    retries: 3
+    discovery_key: mongodb
+- descriptor: "iqs-services-dataprofiles:controller:default:default:*"
+- descriptor: "iqs-services-dataprofiles:client:direct:default:*"
+- descriptor: "iqs-services-dataprofiles:service:http:default:*"
 
-# # Device profiles component
-- descriptor: "iqs-services-deviceprofiles:client:http:default:*"
+# Device profiles components
+- descriptor: "iqs-services-deviceprofiles:persistence:mongodb:default:*"
   connection:
-    protocol: "http"
-    host: "{{{IQS_GROUPS_CONFIGURATION_SERVICE_HOST}}}"
-    port: {{IQS_GROUPS_CONFIGURATION_SERVICE_PORT}}
-  options:
-    connect_timeout: 10000
-    timeout: 10000
-    retries: 3
+    discovery_key: mongodb
+- descriptor: "iqs-services-deviceprofiles:controller:default:default:*"
+- descriptor: "iqs-services-deviceprofiles:client:direct:default:*"
+- descriptor: "iqs-services-deviceprofiles:service:http:default:*"
 
-# # Device configs component
-- descriptor: "iqs-services-deviceconfigs:client:http:default:*"
+# Device configs components
+- descriptor: "iqs-services-deviceconfigs:persistence:mongodb:default:*"
   connection:
-    protocol: "http"
-    host: "{{{IQS_GROUPS_CONFIGURATION_SERVICE_HOST}}}"
-    port: {{IQS_GROUPS_CONFIGURATION_SERVICE_PORT}}
-  options:
-    connect_timeout: 10000
-    timeout: 10000
-    retries: 3
+    discovery_key: mongodb
+- descriptor: "iqs-services-deviceconfigs:controller:default:default:*"
+- descriptor: "iqs-services-deviceconfigs:client:direct:default:*"
 
-# Devices component
-- descriptor: "iqs-services-devices:client:http:default:*"
+# Devices components
+- descriptor: "iqs-services-devices:persistence:mongodb:default:*"
   connection:
-    protocol: "http"
-    host: "{{{IQS_GROUPS_CONFIGURATION_SERVICE_HOST}}}"
-    port: {{IQS_GROUPS_CONFIGURATION_SERVICE_PORT}}
-  options:
-    connect_timeout: 10000
-    timeout: 10000
-    retries: 3
+    discovery_key: mongodb
+- descriptor: "iqs-services-devices:controller:default:default:*"
+  message_templates:
+    phone_connect_welcome:
+      template: phone_connect_welcome
+- descriptor: "iqs-services-devices:client:direct:default:*"
+- descriptor: "iqs-services-devices:service:http:default:*"
 
-# Event templates component
-- descriptor: "iqs-services-eventtemplates:client:http:default:*"
+# Event templates components
+- descriptor: "iqs-services-eventtemplates:persistence:mongodb:default:*"
   connection:
-    protocol: "http"
-    host: "{{{IQS_GROUPS_CONFIGURATION_SERVICE_HOST}}}"
-    port: {{IQS_GROUPS_CONFIGURATION_SERVICE_PORT}}
-  options:
-    connect_timeout: 10000
-    timeout: 10000
-    retries: 3
+    discovery_key: mongodb
+- descriptor: "iqs-services-eventtemplates:controller:default:default:*"
+- descriptor: "iqs-services-eventtemplates:client:direct:default:*"
 
-# Resolutions component
-- descriptor: "iqs-services-resolutions:client:http:default:*"
+# Resolutions components
+- descriptor: "iqs-services-resolutions:persistence:mongodb:default:*"
   connection:
-    protocol: "http"
-    host: "{{{IQS_GROUPS_CONFIGURATION_SERVICE_HOST}}}"
-    port: {{IQS_GROUPS_CONFIGURATION_SERVICE_PORT}}
-  options:
-    connect_timeout: 10000
-    timeout: 10000
-    retries: 3
+    discovery_key: mongodb
+- descriptor: "iqs-services-resolutions:controller:default:default:*"
+- descriptor: "iqs-services-resolutions:client:direct:default:*"
 
-# Gateways component
-- descriptor: "iqs-services-gateways:client:http:default:*"
+# Gateways components
+- descriptor: "iqs-services-gateways:persistence:mongodb:default:*"
   connection:
-    protocol: "http"
-    host: "{{{IQS_GROUPS_CONFIGURATION_SERVICE_HOST}}}"
-    port: {{IQS_GROUPS_CONFIGURATION_SERVICE_PORT}}
-  options:
-    connect_timeout: 10000
-    timeout: 10000
-    retries: 3
+    discovery_key: mongodb
+- descriptor: "iqs-services-gateways:controller:default:default:*"
+- descriptor: "iqs-services-gateways:client:direct:default:*"
 
-# Zones component
-- descriptor: "iqs-services-zones:client:http:default:*"
+# Zones components
+- descriptor: "iqs-services-zones:persistence:mongodb:default:*"
   connection:
-    protocol: "http"
-    host: "{{{IQS_GROUPS_CONFIGURATION_SERVICE_HOST}}}"
-    port: {{IQS_GROUPS_CONFIGURATION_SERVICE_PORT}}
-  options:
-    connect_timeout: 10000
-    timeout: 10000
-    retries: 3
+    discovery_key: mongodb
+- descriptor: "iqs-services-zones:controller:default:default:*"
+- descriptor: "iqs-services-zones:client:direct:default:*"
+- descriptor: "iqs-services-zones:service:http:default:*"
 
-# Beacons component
-- descriptor: "pip-services-beacons:client:http:default:*"
+# Beacons components
+- descriptor: "pip-services-beacons:persistence:mongodb:default:*"
   connection:
-    protocol: "http"
-    host: "{{{IQS_GROUPS_CONFIGURATION_SERVICE_HOST}}}"
-    port: {{IQS_GROUPS_CONFIGURATION_SERVICE_PORT}}
-  options:
-    connect_timeout: 10000
-    timeout: 10000
-    retries: 3
+    discovery_key: mongodb
+- descriptor: "pip-services-beacons:controller:default:default:*"
+- descriptor: "pip-services-beacons:client:direct:default:*"
 
 # Eventrules component
-- descriptor: "iqs-services-eventrules:client:http:default:*"
+- descriptor: "iqs-services-eventrules:persistence:mongodb:default:*"
   connection:
-    protocol: "http"
-    host: "{{{IQS_GROUPS_CONFIGURATION_SERVICE_HOST}}}"
-    port: {{IQS_GROUPS_CONFIGURATION_SERVICE_PORT}}
-  options:
-    connect_timeout: 10000
-    timeout: 10000
-    retries: 3
+    discovery_key: mongodb
+- descriptor: "iqs-services-eventrules:controller:default:default:*"
+- descriptor: "iqs-services-eventrules:client:direct:default:*"
+- descriptor: "iqs-services-eventrules:service:http:default:*"
 
-# Shifts component
-- descriptor: "iqs-services-shifts:client:http:default:*"
+# Shifts components
+- descriptor: "iqs-services-shifts:persistence:mongodb:default:*"
   connection:
-    protocol: "http"
-    host: "{{{IQS_GROUPS_CONFIGURATION_SERVICE_HOST}}}"
-    port: {{IQS_GROUPS_CONFIGURATION_SERVICE_PORT}}
-  options:
-    connect_timeout: 10000
-    timeout: 10000
-    retries: 3
+    discovery_key: mongodb
+- descriptor: "iqs-services-shifts:controller:default:default:*"
+- descriptor: "iqs-services-shifts:client:direct:default:*"
 
-# Emergency plans component
-- descriptor: "iqs-services-emergencyplans:client:http:default:*"
+# Emergency plans components
+- descriptor: "iqs-services-emergencyplans:persistence:mongodb:default:*"
   connection:
-    protocol: "http"
-    host: "{{{IQS_GROUPS_CONFIGURATION_SERVICE_HOST}}}"
-    port: {{IQS_GROUPS_CONFIGURATION_SERVICE_PORT}}
-  options:
-    connect_timeout: 10000
-    timeout: 10000
-    retries: 3
+    discovery_key: mongodb
+- descriptor: "iqs-services-emergencyplans:controller:default:default:*"
+- descriptor: "iqs-services-emergencyplans:client:direct:default:*"
 
 ########### iQs Gateways components ###########
 
@@ -574,8 +468,8 @@
 - descriptor: "iqs-services-restgateway:client:http:default:*"
   connection:
     protocol: "http"
-    host: "{{{IQS_GROUPS_GATEWAYS_SERVICE_HOST}}}"
-    port: {{IQS_GROUPS_GATEWAYS_SERVICE_PORT}}
+    host: "{{{IQS_BUNDLES_GATEWAYS_SERVICE_HOST}}}"
+    port: {{IQS_BUNDLES_GATEWAYS_SERVICE_PORT}}
   options:
     connect_timeout: 10000
     timeout: 10000
@@ -585,8 +479,8 @@
 - descriptor: "iqs-services-mqttgateway:client:http:default:*"
   connection:
     protocol: "http"
-    host: "{{{IQS_GROUPS_GATEWAYS_SERVICE_HOST}}}"
-    port: {{IQS_GROUPS_GATEWAYS_SERVICE_PORT}}
+    host: "{{{IQS_BUNDLES_GATEWAYS_SERVICE_HOST}}}"
+    port: {{IQS_BUNDLES_GATEWAYS_SERVICE_PORT}}
   options:
     connect_timeout: 10000
     timeout: 10000
@@ -596,8 +490,8 @@
 - descriptor: "iqs-services-signals:client:http:default:*"
   connection:
     protocol: "http"
-    host: "{{{IQS_GROUPS_GATEWAYS_SERVICE_HOST}}}"
-    port: {{IQS_GROUPS_GATEWAYS_SERVICE_PORT}}
+    host: "{{{IQS_BUNDLES_GATEWAYS_SERVICE_HOST}}}"
+    port: {{IQS_BUNDLES_GATEWAYS_SERVICE_PORT}}
   options:
     connect_timeout: 10000
     timeout: 10000
@@ -606,15 +500,14 @@
 ########### iQs Management components ###########
 
 # Cloudwatch component
-- descriptor: "iqs-services-cloudwatch:client:http:default:*"
+- descriptor: "iqs-services-cloudwatch:controller:default:default:*"
   connection:
-    protocol: "http"
-    host: "{{{IQS_GROUPS_MANAGEMENT_SERVICE_HOST}}}"
-    port: {{IQS_GROUPS_MANAGEMENT_SERVICE_PORT}}
-  options:
-    connect_timeout: 10000
-    timeout: 10000
-    retries: 3
+    region: "{{{AWS_REGION}}}"
+  credential:
+    access_id: "{{{AWS_ACCESS_ID}}}"
+    access_key: "{{{AWS_ACCESS_KEY}}}"
+- descriptor: "iqs-services-cloudwatch:client:direct:default:*"
+# - descriptor: "iqs-services-cloudwatch:service:http:default:*"
 
 ########### iQs Processing (realtime) components ###########
 
@@ -622,8 +515,8 @@
 - descriptor: "iqs-services-currobjectstates:client:http:default:*"
   connection:
     protocol: "http"
-    host: "{{{IQS_GROUPS_PROCESSING_SERVICE_HOST}}}"
-    port: {{IQS_GROUPS_PROCESSING_SERVICE_PORT}}
+    host: "{{{IQS_BUNDLES_TENANTS_SERVICE_HOST}}}"
+    port: {{IQS_BUNDLES_TENANTS_SERVICE_PORT}}
   options:
     connect_timeout: 10000
     timeout: 10000
@@ -633,8 +526,8 @@
 - descriptor: "iqs-services-currdevicestates:client:http:default:*"
   connection:
     protocol: "http"
-    host: "{{{IQS_GROUPS_PROCESSING_SERVICE_HOST}}}"
-    port: {{IQS_GROUPS_PROCESSING_SERVICE_PORT}}
+    host: "{{{IQS_BUNDLES_TENANTS_SERVICE_HOST}}}"
+    port: {{IQS_BUNDLES_TENANTS_SERVICE_PORT}}
   options:
     connect_timeout: 10000
     timeout: 10000
@@ -644,8 +537,8 @@
 - descriptor: "iqs-services-incidents:client:http:default:*"
   connection:
     protocol: "http"
-    host: "{{{IQS_GROUPS_PROCESSING_SERVICE_HOST}}}"
-    port: {{IQS_GROUPS_PROCESSING_SERVICE_PORT}}
+    host: "{{{IQS_BUNDLES_TENANTS_SERVICE_HOST}}}"
+    port: {{IQS_BUNDLES_TENANTS_SERVICE_PORT}}
   options:
     connect_timeout: 10000
     timeout: 10000
@@ -655,8 +548,8 @@
 - descriptor: "iqs-services-rosters:client:http:default:*"
   connection:
     protocol: "http"
-    host: "{{{IQS_GROUPS_PROCESSING_SERVICE_HOST}}}"
-    port: {{IQS_GROUPS_PROCESSING_SERVICE_PORT}}
+    host: "{{{IQS_BUNDLES_TENANTS_SERVICE_HOST}}}"
+    port: {{IQS_BUNDLES_TENANTS_SERVICE_PORT}}
   options:
     connect_timeout: 10000
     timeout: 10000
@@ -666,8 +559,8 @@
 - descriptor: "iqs-services-corrections:client:http:default:*"
   connection:
     protocol: "http"
-    host: "{{{IQS_GROUPS_PROCESSING_SERVICE_HOST}}}"
-    port: {{IQS_GROUPS_PROCESSING_SERVICE_PORT}}
+    host: "{{{IQS_BUNDLES_TENANTS_SERVICE_HOST}}}"
+    port: {{IQS_BUNDLES_TENANTS_SERVICE_PORT}}
   options:
     connect_timeout: 10000
     timeout: 10000
@@ -677,8 +570,8 @@
 - descriptor: "iqs-services-eventgeneration:client:http:default:*"
   connection:
     protocol: "http"
-    host: "{{{IQS_GROUPS_PROCESSING_SERVICE_HOST}}}"
-    port: {{IQS_GROUPS_PROCESSING_SERVICE_PORT}}
+    host: "{{{IQS_BUNDLES_TENANTS_SERVICE_HOST}}}"
+    port: {{IQS_BUNDLES_TENANTS_SERVICE_PORT}}
   options:
     connect_timeout: 10000
     timeout: 10000
@@ -688,8 +581,8 @@
 - descriptor: "pip-services-routeanalysis:client:http:default:*"
   connection:
     protocol: "http"
-    host: "{{{IQS_GROUPS_PROCESSING_SERVICE_HOST}}}"
-    port: {{IQS_GROUPS_PROCESSING_SERVICE_PORT}}
+    host: "{{{IQS_BUNDLES_TENANTS_SERVICE_HOST}}}"
+    port: {{IQS_BUNDLES_TENANTS_SERVICE_PORT}}
   options:
     connect_timeout: 10000
     timeout: 10000
@@ -699,8 +592,8 @@
 - descriptor: "iqs-services-stateupdates:client:http:default:*"
   connection:
     protocol: "http"
-    host: "{{{IQS_GROUPS_PROCESSING_SERVICE_HOST}}}"
-    port: {{IQS_GROUPS_PROCESSING_SERVICE_PORT}}
+    host: "{{{IQS_BUNDLES_TENANTS_SERVICE_HOST}}}"
+    port: {{IQS_BUNDLES_TENANTS_SERVICE_PORT}}
   options:
     connect_timeout: 10000
     timeout: 10000
@@ -712,8 +605,8 @@
 - descriptor: "iqs-services-opevents:client:http:default:*"
   connection:
     protocol: "http"
-    host: "{{{IQS_GROUPS_HISTORY_SERVICE_HOST}}}"
-    port: {{IQS_GROUPS_HISTORY_SERVICE_PORT}}
+    host: "{{{IQS_BUNDLES_TENANTS_SERVICE_HOST}}}"
+    port: {{IQS_BUNDLES_TENANTS_SERVICE_PORT}}
   options:
     connect_timeout: 10000
     timeout: 10000
@@ -723,8 +616,8 @@
 - descriptor: "pip-services-transducerdata:client:http:default:*"
   connection:
     protocol: "http"
-    host: "{{{IQS_GROUPS_HISTORY_SERVICE_HOST}}}"
-    port: {{IQS_GROUPS_HISTORY_SERVICE_PORT}}
+    host: "{{{IQS_BUNDLES_TENANTS_SERVICE_HOST}}}"
+    port: {{IQS_BUNDLES_TENANTS_SERVICE_PORT}}
   options:
     connect_timeout: 10000
     timeout: 10000
@@ -734,8 +627,8 @@
 - descriptor: "pip-services-positions:client:http:default:*"
   connection:
     protocol: "http"
-    host: "{{{IQS_GROUPS_HISTORY_SERVICE_HOST}}}"
-    port: {{IQS_GROUPS_HISTORY_SERVICE_PORT}}
+    host: "{{{IQS_BUNDLES_TENANTS_SERVICE_HOST}}}"
+    port: {{IQS_BUNDLES_TENANTS_SERVICE_PORT}}
   options:
     connect_timeout: 10000
     timeout: 10000
@@ -745,8 +638,8 @@
 - descriptor: "iqs-services-objectstates:client:http:default:*"
   connection:
     protocol: "http"
-    host: "{{{IQS_GROUPS_HISTORY_SERVICE_HOST}}}"
-    port: {{IQS_GROUPS_HISTORY_SERVICE_PORT}}
+    host: "{{{IQS_BUNDLES_TENANTS_SERVICE_HOST}}}"
+    port: {{IQS_BUNDLES_TENANTS_SERVICE_PORT}}
   options:
     connect_timeout: 10000
     timeout: 10000
@@ -756,8 +649,8 @@
 - descriptor: "pip-services-routes:client:http:default:*"
   connection:
     protocol: "http"
-    host: "{{{IQS_GROUPS_HISTORY_SERVICE_HOST}}}"
-    port: {{IQS_GROUPS_HISTORY_SERVICE_PORT}}
+    host: "{{{IQS_BUNDLES_TENANTS_SERVICE_HOST}}}"
+    port: {{IQS_BUNDLES_TENANTS_SERVICE_PORT}}
   options:
     connect_timeout: 10000
     timeout: 10000
@@ -767,8 +660,8 @@
 - descriptor: "iqs-services-attendance:client:http:default:*"
   connection:
     protocol: "http"
-    host: "{{{IQS_GROUPS_HISTORY_SERVICE_HOST}}}"
-    port: {{IQS_GROUPS_HISTORY_SERVICE_PORT}}
+    host: "{{{IQS_BUNDLES_TENANTS_SERVICE_HOST}}}"
+    port: {{IQS_BUNDLES_TENANTS_SERVICE_PORT}}
   options:
     connect_timeout: 10000
     timeout: 10000
@@ -789,17 +682,17 @@
     max_req_size: "1mb"
 
 # Common HTTP endpoint
-# - descriptor: "pip-services:endpoint:http:default:1.0"
-#   connection:
-#     protocol: "http"
-#     host: "0.0.0.0"
-#     port: 8081
+- descriptor: "pip-services:endpoint:http:default:1.0"
+  connection:
+    protocol: "http"
+    host: "0.0.0.0"
+    port: 8081
 
 # # Heartbeat service
-# - descriptor: "pip-services:heartbeat-service:http:default:1.0"
+- descriptor: "pip-services:heartbeat-service:http:default:1.0"
 
 # # Status service
-# - descriptor: "pip-services:status-service:http:default:1.0"
+- descriptor: "pip-services:status-service:http:default:1.0"
 
 # /api/v1 operations and service
 - descriptor: "pip-services:facade-operations:about:default:*"
