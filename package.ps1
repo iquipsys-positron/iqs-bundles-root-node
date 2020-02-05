@@ -28,9 +28,9 @@ if ($env:DOCKER_IP -ne $null) {
 
 try {
     # Workaround to remove dangling images
-    docker-compose -f ./docker/docker-compose.local.yml down
+    docker-compose -f ./docker/docker-compose.yml down
 
-    docker-compose -f ./docker/docker-compose.local.yml up -d
+    docker-compose -f ./docker/docker-compose.yml up -d
 
     # Test using curl
     #Start-Sleep -Seconds 10
@@ -39,5 +39,5 @@ try {
     #Write-Host "The container was successfully built."
 } finally {
     # Workaround to remove dangling images
-    docker-compose -f ./docker/docker-compose.local.yml down
+    docker-compose -f ./docker/docker-compose.yml down
 }
