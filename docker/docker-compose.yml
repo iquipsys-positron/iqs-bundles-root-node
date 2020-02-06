@@ -1,0 +1,88 @@
+version: '3.3'
+
+services:
+  iqs-bundles-root-node:
+    build:
+      context: ../
+      dockerfile: ./docker/Dockerfile
+    depends_on:
+      - iqs-mongo
+      - iqs-memcached
+      - iqs-mosquitto
+      - iqs-bundles-gateways-node
+      - iqs-bundles-tenants-node
+    environment:
+      - ENV_NAME=debug
+      - MONGO_SERVICE_HOST=iqs-mongo
+      - MONGO_SERVICE_PORT=27017
+      - MONGO_DB=tracker
+      - MEMCACHED_HOST=iqs-memcached
+      - MEMCACHED_PORT=11211
+      - SERVER_URL=http://localhost:8080
+      - AWS_REGION=us-east-1
+      - AWS_ACCESS_ID=
+      - AWS_ACCESS_KEY=
+      - AWS_BLOBS_ARN=arn:aws:s3:us-east-1::iqs-positron-blobs-stage
+      - IQS_BUNDLES_TENANTS_SERVICE_HOST=iqs-bundles-tenants-node
+      - IQS_BUNDLES_TENANTS_SERVICE_PORT=8004
+      - IQS_BUNDLES_GATEWAYS_SERVICE_HOST=iqs-bundles-gateways-node
+      - IQS_BUNDLES_GATEWAYS_SERVICE_PORT=8005
+    ports: 
+      - "8080:8080"
+      - "8002:8081"
+
+  iqs-bundles-tenants-node:
+    image: registry.gitlab.com/iqs-bundles/iqs-bundles-tenants-node:1.0.0-1-rc
+    links:
+      - iqs-mongo
+    environment:
+      - ENV_NAME=debug
+      - MONGO_SERVICE_HOST=iqs-mongo
+      - MONGO_SERVICE_PORT=27017
+      - MONGO_DB=tracker
+      - AWS_REGION=us-east-1
+      - AWS_ACCESS_ID=
+      - AWS_ACCESS_KEY=
+      - IQS_BUNDLES_ROOT_SERVICE_HOST=iqs-bundles-root-node
+      - IQS_BUNDLES_ROOT_SERVICE_PORT=8002
+      - IQS_BUNDLES_GATEWAYS_SERVICE_HOST=iqs-bundles-gateways-node
+      - IQS_BUNDLES_GATEWAYS_SERVICE_PORT=8005      
+    ports:
+      - "8004:8080"
+
+  iqs-bundles-gateways-node:
+    image: registry.gitlab.com/iqs-bundles/iqs-bundles-gateways-node:1.0.0-1-rc
+    links:
+      - iqs-mongo
+    environment:
+      - ENV_NAME=debug
+      - MONGO_SERVICE_HOST=iqs-mongo
+      - MONGO_SERVICE_PORT=27017
+      - MONGO_DB=tracker
+      - AWS_REGION=us-east-1
+      - AWS_ACCESS_ID=
+      - AWS_ACCESS_KEY=
+      - MQTT_SERVICE_HOST=iqs-mosquitto
+      - MQTT_SERVICE_PORT=1883
+      - TELTONIKA_SERVICE_HOST=
+      - TELTONIKA_SERVICE_PORT=  
+      - IQS_BUNDLES_ROOT_SERVICE_HOST=iqs-bundles-root-node
+      - IQS_BUNDLES_ROOT_SERVICE_PORT=8002          
+    ports:
+      - "8005:8080"
+
+  iqs-mongo:
+    image: mongo:latest
+    ports:
+      - "27017:27017"
+
+  iqs-memcached:
+    image: memcached:latest
+    ports:
+      - "11211:11211"
+
+  iqs-mosquitto:
+    image: toke/mosquitto
+    ports:
+      - "1883:1883"
+      - "9001:9001"
