@@ -32,7 +32,7 @@ services:
       - "8002:8081"
 
   iqs-bundles-tenants-node:
-    image: registry.gitlab.com/iqs-bundles/iqs-bundles-tenants-node:1.0.0-1-rc
+    image: pipdevs/iqs-bundles-tenants-node:1.0.0-1-rc
     links:
       - iqs-mongo
     environment:
@@ -51,7 +51,7 @@ services:
       - "8004:8080"
 
   iqs-bundles-gateways-node:
-    image: registry.gitlab.com/iqs-bundles/iqs-bundles-gateways-node:1.0.0-1-rc
+    image: pipdevs/iqs-bundles-gateways-node:1.0.0-1-rc
     links:
       - iqs-mongo
     environment:

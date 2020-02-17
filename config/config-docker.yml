@@ -58,25 +58,17 @@
 - descriptor: "pip-services-eventlog:controller:default:default:*"
 - descriptor: "pip-services-eventlog:client:direct:default:*"
 
-# Statistics components ????
-# - descriptor: "pip-services-statistics:persistence:mongodb:default:*"
-#   connection:
-#     discovery_key: mongodb
-# - descriptor: "pip-services-statistics:controller:default:default:*"
-# - descriptor: "pip-services-statistics:client:direct:default:*"
-# - descriptor: "iqs-services-statistics:client:direct:default:*"
-
 # Statistics component
 - descriptor: "pip-services-statistics:client:http:default:*"
   connection:
     protocol: "http"
     host: "{{{IQS_BUNDLES_TENANTS_SERVICE_HOST}}}"
     port: {{IQS_BUNDLES_TENANTS_SERVICE_PORT}}
-- descriptor: "iqs-services-statistics:client:http-proxy:default:*"
-  connection:
-    protocol: "http"
-    host: "{{{IQS_BUNDLES_TENANTS_SERVICE_HOST}}}"
-    port: {{IQS_BUNDLES_TENANTS_SERVICE_PORT}}
+# - descriptor: "iqs-services-statistics:client:http-proxy:default:*"
+#   connection:
+#     protocol: "http"
+#     host: "{{{IQS_BUNDLES_TENANTS_SERVICE_HOST}}}"
+#     port: {{IQS_BUNDLES_TENANTS_SERVICE_PORT}}
 
 # Settings components
 - descriptor: "pip-services-settings:persistence:mongodb:default:*"

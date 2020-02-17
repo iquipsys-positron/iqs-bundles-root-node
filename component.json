@@ -1,6 +1,6 @@
 {
   "name": "iqs-bundles-root-node",
-  "registry": "registry.gitlab.com/iqs-services",
+  "registry": "pipdevs",
   "version": "1.0.0",
-  "build": 203
+  "build": 1
 }
